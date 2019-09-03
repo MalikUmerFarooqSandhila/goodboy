@@ -1,0 +1,145 @@
+	tables for download: https://www.quandl.com/databases/SFA/data	
+		
+	real and temp tables	
+		
+		
+	for all downloaded tables map column names between download columns and table columns	
+	for company add start_date and end_date	
+		
+		
+	cfg file for aws db information so does not code change if environment changes	
+		
+	sharadar_company	
+	        load into temp	
+	        scalemarketcap-> break into 2 columns scalemarketcap_int, scalemarketcap_txt	
+	        scalemarketcap-> break into 2 columns scalerevenue_int, scalemrevenue_txt	
+	        	
+	        end date company table where 	
+	                perma ticker is same and	
+	                        sector is different or	
+	                        industry is different or	
+	                        ticker is different	
+		 
+	        insert new and different records from temp table	
+		
+	Actions	
+	        load into temp	
+	        match to company table on ticker and end_date is null	
+	        insert into actions table with left join so only new ones are inserted	
+		
+	        delete from prices where perma ticker mataches to permacticker in temp table and action is 'split'	
+	        or	
+	        open/split_value, close/split_value, high/split_value, low/split_value	
+		
+	        download price history for splits in the temp table 	
+	                date of split load: 2009 to yesterday-1	
+	                save to temp table	
+	                match for permaticker	
+	                load into price table	
+		
+	        tech_anal_v	
+	                adjust these fields in the tech_anal_v table by the adjustment factor for companies in split_temp table	
+	                bb_lower, bb_mid, bb_upper, ma_20, ma_50, ma_200        => tech_value / split_value     	
+		
+	Prices	
+	        load into temp table	
+	        match to company on ticker and end_date is null	
+	        load prices into real table	
+		
+		
+	Fundamentals 	
+	        load history	
+	                add a periodenddate:calendar.monthrange(year(reportperiod), month(reportperiod))[1]	
+	                datekey-> filingdate	
+	                add fiscalquarter:	
+                             find most recent fy<= quarter end	
+	                        delta months between fy month and qtr month: 	
+	                        if val is :	
+	                        0 -> 4	
+	                        else months / 3 -> fiscalquarter	
+		
+	        get daily updated	
+	        load to temp	
+	        match on permaticker	
+	        load to real	
+		
+	        seperate table for year	
+	        seperate table for quarter	
+	        seperate table for ttm	
+		
+		
+	Daily metrics	
+	        download history	
+	        match on perma ticker to sharadar_cos	
+	        insert record	
+
+	S&P 500	
+	        download table	
+	        look for added and removed and match tickers	
+	        insert with permaticker, index_name, add_date, end_date	
+	        index_name will be sp500	
+		
+	        how to do this nightly:	
+	        look for current date and "added" or "removed"	
+	        end date existing record where ticker matches ticker in sharadar_cos table which matches permaticker in sp500 table and action is removed	
+	        insert record where ticker matches ticker in sharadar_cos table 	
+		
+		
+	Institution	
+	Core US Institution by Ticker	
+	        load history	 
+	        load to temp	
+	        match ticker to company for perma ticker	
+	        load into real table	
+		
+	Core US Institution by Investor	
+	        load history	
+	        load to temp	
+	        match ticker to company for perma ticker	
+	        load into real table	
+		
+		
+	Insider	
+	        load history	
+	        download nightly 	
+	        match on permaticker	
+	        load into real table	
+		
+	Indicators table	
+	        Download indicators 1x into a table	
+		
+	Write each table as a class	
+	        1. create table	
+	        2. history load	
+	        3. nightly load	
+		
+	Have a nightly process setup as a batch job	
+		
+		
+	Run the techanal 	
+	        Optimize the code that exists	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+123740
+185374
+187208
+
+
+
+
+
+
+
+		
